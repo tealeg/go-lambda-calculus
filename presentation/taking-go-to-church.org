@@ -280,11 +280,11 @@ We'll call inc:
 [[./alan-turing.jpg]]
 * Alan Turing (1912-1954)
 ** Creater of the Turing Machine
+[[./alan-turing.jpg]]
  - A theoretical, mechanical machine
  - Any algorithm can be implemented on a Turing Machine
 
 * Pop Quiz 3: Who's this?
-
 [[./Alonzo_Church.jpg]]
 
 * Alonzo Church (1903-1995)
