@@ -350,7 +350,7 @@ What will happen when we evaluate =zero(b)(c)= at the heart of this function?
   zerothB := (func(x λ) λ { return func(y λ) λ {return y} })( b )( c )
   // parameter x is thrown away
   zerothB := func(y λ) λ { return y }(c)
-  // So the evaluetion resolves to:
+  // So the evaluation resolves to:
   zerothB := c
 #+END_SRC
 
