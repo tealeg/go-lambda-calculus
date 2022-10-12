@@ -361,7 +361,7 @@ so..
           return func(c λ) λ {
             return b(c)
         }
-          }
+ }
 #+END_SRC
 
 What's interesting about this function?
@@ -371,7 +371,7 @@ What's interesting about this function?
 #+BEGIN_SRC go
   one := func(a λ) λ {
           return func(b λ) λ {
-            return b(c)
+            return a(b)
           }
   }
 #+END_SRC
@@ -439,10 +439,12 @@ I've not implemented this one yet!  This implements recursion in any language th
 
 * What's the point of all this?
 * Originally, it answered questions about what was possible.
+Turing added the part that made it seem feasible in the *real* world.
+... though Conrad Zuse was already working on that :-) 
 * Now, it gives us an important lesson:
 - Any problem that can be solved in computing can be solved in Go, using only functions.
 - Functions are the most powerful primitive we have.
-- Technically we don't need types, or generics.  In practise they're easier.
+- Technically we don't need types, or generics.  In practise they're easier to use.
 * What about the notion of the self-aware system?
 - This process is possibly isomorphic to how we build functionality in the lambda calculus.
 - Read "Gödel, Escher, Bach: an Eternal, Golden, Braid" by Douglas Hofstadter 
