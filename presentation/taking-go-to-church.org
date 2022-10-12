@@ -1,0 +1,431 @@
+* Taking Go to Church
+** (No, not *that* kind of church..)
+
+* Who am I? 
+** Geoffrey Teale
+*** Head of Engineering (Developer eXperience)
+                   [[./megopher.png]]
+
+                   
+                   [[./logo.png]]
+
+* A question that comes up a lot in Go
+**  "Is Go an object oriented langauge?"
+
+Lets get a quick vote on that?
+
+* I'm not here to answer that question
+
+* .. but the answer is, "not especially"
+
+* Questions that come up less often are ...
+
+** "Is Go an untyped language?"
+
+** "Is go a functional programming language?"
+
+What do you think?
+
+* These don't seem like interesting questions.
+** Let's ask something more fundamental
+
+* What is the minimum set of primitives you can do useful work with in Go?
+This is rhetoric, don't answer it yet!
+* What is the most powerful abstraction in Go?
+.. more rhetoric... 
+* How can we derive complex behaviour from simplie primitives?
+.. rhetoric, but a bit grander in scope.. 
+* How is a self aware being built from atoms?
+Isomorphisms baby!
+
+*  Why am I even thinking about this?
+
+** I've got nearly 40 years programming behind me
+
+** Now, I'm more interested in fundamentals
+
+** What ideas you're exposed to tends to depend on:
+- how and where you learned to program
+- what languages you work with
+
+
+* So let's explore!
+** Things people in the Go world rarely talk about.
+
+#+BEGIN_SRC 
+Y = λf.(λx.f (x x))(λx.f (x x))
+#+END_SRC
+
+Who know's what this is?
+
+* Lambda Calculus
+** A formal system, in mathmatical terms
+** ... but essentially a programming language
+** ... created before computers existed
+
+* We're not going to go very deep
+** We only have half an hour!
+
+* OK.  Now to some Go:
+
+** First a type
+
+#+BEGIN_SRC go
+type λ func(l λ) λ
+#+END_SRC
+
+** We asked "Is Go an untyped language?"
+
+No, but imagine a world where you only have this type!
+
+* Checkpoint:
+** Is everyone familiar with the notion of a closure?
+
+#+BEGIN_SRC go
+  func makeClosure() func() int {
+          x := 4
+          return func() int { return x }
+  }
+
+  a := makeClosure()
+  a() // => 4
+#+END_SRC
+
+* Pop Quiz: 1
+** Who's this?
+[[./curry-photo.jpg]]
+
+* Haskell Curry (1900-1982)
+** What's named after him?
+[[./curry-photo.jpg]]
+
+
+* Yes, the programming language "Haskell"
+** But also.. Currying
+Even though he didn't invent it.
+
+* Currying
+** an equivalency:
+
+#+BEGIN_SRC go
+x := f(a, b, c)
+x := f(a)(b)(c)
+#+END_SRC
+
+We need to know that to understand the next piece
+
+* Lambda Calculus syntax in our Go world
+#+BEGIN_SRC
+λa.a         => func(a λ) λ { return a }
+λa.(λb.ba)   => func(a λ) λ { return func(b λ) λ { return b(a} }}
+λab.ba       => func(a λ) λ { return func(b λ) λ { return b(a} }}
+λab.(bb)(aa) => func(a λ) λ { return func(b λ) λ { return (b(b))(a(a)) }}
+#+END_SRC
+
+
+
+* .. and then a closure that is a bridge
+#+BEGIN_SRC go
+
+    func makeCounter() (λ, func(), func()) {
+            var i int = 0
+
+            inc := func(f λ) λ{
+                    i = i + 1
+                    return f	
+            }
+
+            get := func() int {
+                    return i
+            }
+
+            reset := func() {
+                    i = 0
+            }
+
+            return inc, get, reset
+    }
+
+#+END_SRC
+
+Remember =inc= and =get!=
+These functions returned by =makeCounter= are our bridge back to normal, typed Go.
+
+
+
+* A curried function
+** But what does it do?
+
+#+BEGIN_SRC go
+  // λ ab.b
+  x := func(a λ) λ {
+          return func(b λ) λ {
+                  return b
+          }
+  }
+
+#+END_SRC
+
+* It's part of sequence, here's the next one
+
+#+BEGIN_SRC go
+  // λ ab.ab
+  y := func(a λ) λ {
+          return func(b λ) λ {
+                  return a(b)
+          }
+  }
+#+END_SRC
+** ... and a third
+#+BEGIN_SRC go
+  // λ ab.aab
+  z := func(a λ) λ {
+          return func(b λ) λ {
+                  return a(a(b))
+          }
+  }
+#+END_SRC
+
+* Let's see what happens when we pass our =inc= function to =x=
+
+#+BEGIN_SRC go
+  e := x(inc) // e = (λ ab.b)inc
+#+END_SRC
+We get a function back where any mention of =a= is replaced by =inc=.
+
+#+BEGIN_SRC go
+  e := func(b λ) λ {  // e = λ b.b
+          return b
+  }
+#+END_SRC
+
+If we then evaluate this:
+
+#+BEGIN_SRC go
+  _ = e(nil)       // (λ b.b)nil => nil
+  result := get()  // inc is never called, so result = 0
+#+END_SRC
+
+... we get =0=
+
+* What happens when we pass =inc= to =y=
+#+BEGIN_SRC go
+  e := y(inc)
+#+END_SRC
+We get a function back where any mention of =a= is replaced by =inc=.
+
+#+BEGIN_SRC go
+  e := func(z λ) λ {
+          return inc(z)
+  }
+#+END_SRC
+
+If we then evaluate this:
+
+#+BEGIN_SRC go
+  e(nil)
+#+END_SRC
+
+We'll call inc:
+#+BEGIN_SRC go
+
+  inc := func(f λ) λ {
+           i = i + 1
+           return f
+  }
+#+END_SRC
+
+.. and then calling =get()= will return =1=
+* What will happen if we do the same with function =z=?
+* That's right!
+** We get a =2=
+
+* Another way to represent numbers
+#+BEGIN_SRC go
+  // 0 = λ ab.b
+  func zero(a λ) λ {
+    return func(b λ) λ {
+      return b
+    }
+  }
+
+  func one(a λ) λ {
+    return func(b λ) λ {
+      return a(b)
+    }
+  }
+
+ func two(a λ) λ {
+    return func(b λ) λ {
+      return a(a(b))
+    }
+  }          
+#+END_SRC
+
+* Church numerals
+** We have to accept that these functions are numbers, even without using our =inc= and =get= functions.
+** =inc= also demonstrates that these numbers can also be exponents:
+#+BEGIN_SRC go
+  n := two(two) // 2**2
+  _ = n(inc)
+  get() // => 4
+  reset()        
+  n = two(two)(two) // (2**2)**2  => 4**2
+  _ = n(inc)
+  get() // => 16
+#+END_SRC
+** It's a weird name...
+
+* Pop Quiz 2: Who's this?
+[[./alan-turing.jpg]]
+* Alan Turing (1912-1954)
+** Creater of the Turing Machine
+ - A theoretical, mechanical machine
+ - Any algorithm can be implemented on a Turing Machine
+
+* Pop Quiz 3: Who's this?
+
+[[./Alonzo_Church.jpg]]
+
+* Alonzo Church (1903-1995)
+** PhD supervisor of Turing
+** Invented the lambda calculus 
+** Invented Church numerals
+To make numbers work in the lambda calculus
+** Church-Turing Thesis
+[[./Alonzo_Church.jpg]]
+
+* Operations on church numbers
+** Succesor 
+#+BEGIN_SRC go
+  // λ abc.b(abc)
+  succ = func(a λ) λ {
+      return func(b λ) λ {
+          return func(c λ) λ {
+             return b(a(b)(c))
+          }
+       }
+  }
+#+END_SRC
+
+* Successor to zero
+#+BEGIN_SRC go
+
+  // λ ab.b
+  zero := func(x λ) λ { return func(y λ) λ { return y } }
+
+  s0 := succ(zero)   // s0 = (λ abc.b(abc))(λ ab.b)
+#+END_SRC
+
+The result of =succ(zero)= is a function where all references to =a= are replaced with =zero=:
+#+BEGIN_SRC go
+  s0 := func(b λ) λ {
+          return func(c λ) λ {
+            return b(zero(b)(c))
+        }
+  }
+#+END_SRC
+* ... successor to zero
+What will happen when we evaluate =zero(b)(c)= at the heart of this function?
+#+BEGIN_SRC go
+  zerothB := (func(x λ) λ { return func(y λ) λ {return y} })( b )( c )
+  // parameter x is thrown away
+  zerothB := func(y λ) λ { return y }(c)
+  // So the evaluetion resolves to:
+  zerothB := c
+#+END_SRC
+
+so..
+
+#+BEGIN_SRC go
+  s0 := func(b λ) λ {
+          return func(c λ) λ {
+            return b(c)
+        }
+          }
+#+END_SRC
+
+What's interesting about this function?
+
+* That's right!
+
+#+BEGIN_SRC go
+  one := func(a λ) λ {
+          return func(b λ) λ {
+            return b(c)
+          }
+  }
+#+END_SRC
+* Addition
+** We get it for free!
+#+BEGIN_SRC go
+  plus := succ
+  result := one(plus)(one)
+  _ = result(inc)
+  get() // => 2        
+#+END_SRC
+
+* Okay, soon it'll be time to rest your brain
+The break is coming I promise.
+
+* Some lambda forms algorithms to enjoy in your own time :-)
+** Multiplication
+#+BEGIN_SRC go
+  // λabc.a(bc)
+  func mul (a λ) λ {
+    return func(b λ) λ {
+      return func(c λ) λ {
+        return a(b(c))
+      }
+    }
+  }
+
+  four := mul(two)(two)
+
+#+END_SRC
+* Boolean logic
+#+BEGIN_SRC go
+    // λab.a
+    func True(a λ) λ {
+            return func(b λ) λ {
+                    return a
+            }
+    }
+
+    // λab.b
+    func False(a λ) λ {
+            return func(b λ) λ {
+                    return b
+            }
+    }
+
+    // λab.a(b)
+    func IfThenElse(a λ) λ {
+            return func(b λ) λ {
+                    return a(b)
+            }
+    }
+
+  trueOne := IfThenElse(True)(one)(two)
+  falseTwo := IfThenElse(False)(one)(two)
+#+END_SRC
+
+* Recursion
+** The famous Y-combinator!
+#+BEGIN_SRC
+ Y = λf.(λx.f (x x))(λx.f (x x))
+#+END_SRC
+
+I've not implemented this one yet!  This implements recursion in any language that supports first class functions.
+
+* What's the point of all this?
+* Originally, it answered questions about what was possible.
+* Now, it gives us an important lesson:
+- Any problem that can be solved in computing can be solved in Go, using only functions.
+- Functions are the most powerful primitive we have.
+- Technically we don't need types, or generics.  In practise they're easier.
+* What about the notion of the self-aware system?
+- This process is possibly isomorphic to how we build functionality in the lambda calculus.
+- Read "Gödel, Escher, Bach: an Eternal, Golden, Braid" by Douglas Hofstadter 
+* The end
+[[./endgopher.png]]
