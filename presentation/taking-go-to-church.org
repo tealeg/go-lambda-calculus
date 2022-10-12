@@ -33,10 +33,13 @@ What do you think?
 This is rhetoric, don't answer it yet!
 * What is the most powerful abstraction in Go?
 .. more rhetoric... 
-* How can we derive complex behaviour from simplie primitives?
+* How can we derive complex behaviour from simple primitives?
 .. rhetoric, but a bit grander in scope.. 
-* How is a self aware being built from atoms?
-Isomorphisms baby!
+* How is a self-aware "being" built from atoms?
+
+[[./dramatic.jpg]]
+
+* This talk won't cover that last one (much)
 
 *  Why am I even thinking about this?
 
@@ -48,7 +51,6 @@ Isomorphisms baby!
 - how and where you learned to program
 - what languages you work with
 
-
 * So let's explore!
 ** Things people in the Go world rarely talk about.
 
@@ -56,10 +58,10 @@ Isomorphisms baby!
 Y = λf.(λx.f (x x))(λx.f (x x))
 #+END_SRC
 
-Who know's what this is?
+Who knows what this is?
 
 * Lambda Calculus
-** A formal system, in mathmatical terms
+** A formal system, in mathematical terms
 ** ... but essentially a programming language
 ** ... created before computers existed
 
@@ -104,6 +106,12 @@ No, but imagine a world where you only have this type!
 ** But also.. Currying
 Even though he didn't invent it.
 
+** Moses Schönfinkel (6 years earlier)
+[[./schoenfinkel.jpg]]
+
+** Gottlob Frege (1893)
+[[./frege.jpg]]
+
 * Currying
 ** an equivalency:
 
@@ -117,8 +125,8 @@ We need to know that to understand the next piece
 * Lambda Calculus syntax in our Go world
 #+BEGIN_SRC
 λa.a         => func(a λ) λ { return a }
-λa.(λb.ba)   => func(a λ) λ { return func(b λ) λ { return b(a} }}
-λab.ba       => func(a λ) λ { return func(b λ) λ { return b(a} }}
+λa.(λb.ba)   => func(a λ) λ { return func(b λ) λ { return b(a) }}
+λab.ba       => func(a λ) λ { return func(b λ) λ { return b(a) }}
 λab.(bb)(aa) => func(a λ) λ { return func(b λ) λ { return (b(b))(a(a)) }}
 #+END_SRC
 
@@ -237,6 +245,17 @@ We'll call inc:
 
 .. and then calling =get()= will return =1=
 * What will happen if we do the same with function =z=?
+Reminder: this is =z=
+#+BEGIN_SRC go
+  // λ ab.aab
+  z := func(a λ) λ {
+          return func(b λ) λ {
+                  return a(a(b))
+          }
+  }
+#+END_SRC
+
+
 * That's right!
 ** We get a =2=
 
