@@ -5,6 +5,14 @@ import (
 	"testing"
 )
 
+// makeCounter creates a closure around an integer that is utilised by
+// the 3 functions it returns: an incrementor, a getter and a
+// resetter.  The incrementor is a λ function, and thus can be used as
+// a parameter to, or return value from any other λ type.
+// Specifically if you pass it to a church numeral, it will be called
+// the number of times that numeral represents, and thus can be used
+// for its side-effect of generating an Integer equivalent of any
+// given Church numeral.
 func makeCounter() (λ, func() int, func()) {
 	var i int = 0
 
@@ -24,8 +32,9 @@ func makeCounter() (λ, func() int, func()) {
 	return inc, get, reset
 }
 
+// intResult is a convenience method used in testing.  It wraps up the
+// steps required to convert a Church numeral to a Go integer.
 func intResult(l λ) int {
-	// count, counter := makeCounter()
 	counter, count, _ := makeCounter()
 	_ = l(counter)(nil)
 	return count()
