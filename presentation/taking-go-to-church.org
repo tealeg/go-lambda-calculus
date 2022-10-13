@@ -435,7 +435,10 @@ The break is coming I promise.
  Y = λf.(λx.f (x x))(λx.f (x x))
 #+END_SRC
 
-I've not implemented this one yet!  This implements recursion in any language that supports first class functions.
+I've not implemented this one yet!  This implements recursion in any
+language that supports first class functions.
+
+See also: https://thealmarty.com/2018/08/13/recursion-in-lambda-calculus-the-y-combinator/
 
 * What's the point of all this?
 * Originally, it answered questions about what was possible.
