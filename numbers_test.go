@@ -86,6 +86,31 @@ func TestSucc(t *testing.T) {
 	c.Assert(intResult(three(succ)(three)), qt.Equals, 6)
 }
 
+func TestPred(t *testing.T) {
+	c := qt.New(t)
+
+	three := succ(two)
+
+	// The predecessor of 1 is 0
+	c.Assert(intResult(pred(one)), qt.Equals, 0)
+	// The predecessor of 2 is 1
+	c.Assert(intResult(pred(two)), qt.Equals, 1)
+	// The predecessor of 3 is 2
+	c.Assert(intResult(pred(three)), qt.Equals, 2)
+
+	// The first predecessor of 1 is 0
+	c.Assert(intResult(one(pred)(one)), qt.Equals, 0)
+	// The first predecessor of 2 is 1
+	c.Assert(intResult(one(pred)(two)), qt.Equals, 1)
+
+	// The first predecessor of 3 is 2
+	c.Assert(intResult(one(pred)(three)), qt.Equals, 2)
+	// The second predecessor of 3 is 1
+	c.Assert(intResult(two(pred)(three)), qt.Equals, 1)
+	// The third predecessor of 3 is 0
+	c.Assert(intResult(three(pred)(three)), qt.Equals, 0)
+}
+
 func TestPlus(t *testing.T) {
 	c := qt.New(t)
 

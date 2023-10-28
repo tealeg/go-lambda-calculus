@@ -30,6 +30,25 @@ func succ(a λ) λ {
 	}
 }
 
+// pred = λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
+func pred(n λ) λ {
+	return func(f λ) λ {
+		return func(x λ) λ {
+			return n(
+				func(g λ) λ {
+					return func(h λ) λ {
+						return h(g(f))
+					}
+				},
+			)(func(u λ) λ {
+				return x
+			})(func(u λ) λ {
+				return u
+			})
+		}
+	}
+}
+
 // λ abc.b(abc)  - identical to succ
 func plus(a λ) λ {
 	return func(b λ) λ {
