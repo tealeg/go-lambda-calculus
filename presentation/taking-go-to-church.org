@@ -1,49 +1,70 @@
+#+reveal_root: https://cdn.jsdelivr.net/npm/reveal.js
+#+reveal_theme: beige
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: taking-go-to-church
+#+author: Geoffrey J. Teale
+#+email: tealeg@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 29.1 (Org mode 9.6.6)
+#+cite_export:
+
 * Taking Go to Church
 ** (No, not *that* kind of church..)
+** (Don't worry, this will get less cryptic)
+** ... a bit. 
 
 * Who am I? 
 ** Geoffrey Teale
-*** Head of Engineering (Developer eXperience)
+*** A proud gopher since November 10th 2009
                    [[./megopher.png]]
 
-                   
+*** A Head of Engineering @ Upvest 
                    [[./logo.png]]
+https://upvest.co
+
+ https://www.linkedin.com/in/geoffteale/  [[./linkedin.png]]
 
 * A question that comes up a lot in Go
 **  "Is Go an object oriented langauge?"
 
 Lets get a quick vote on that?
 
-* I'm not here to answer that question
+** I'm not here to answer that question
 
-* .. but the answer is, "not especially"
+** .. but the answer is, "not especially"
 
-* Questions that come up less often are ...
+** Questions that come up less often are ...
 
-** "Is Go an untyped language?"
+*** "Is Go an untyped language?"
 
-** "Is go a functional programming language?"
+*** "Is go a functional programming language?"
 
 What do you think?
 
-* These don't seem like interesting questions.
-** Let's ask something more fundamental
+** These don't seem like interesting questions.
+*** Let's ask something more fundamental
 
-* What is the minimum set of primitives you can do useful work with in Go?
+** What is the minimum set of primitives you can do useful work with in Go?
 This is rhetoric, don't answer it yet!
-* What is the most powerful abstraction in Go?
+** What is the most powerful abstraction in Go?
 .. more rhetoric... 
-* How can we derive complex behaviour from simple primitives?
+** How can we derive complex behaviour from simple primitives?
 .. rhetoric, but a bit grander in scope.. 
-* How is a self-aware "being" built from atoms?
-
+** How is a self-aware "being" built from atoms?
+ 
 [[./dramatic.jpg]]
 
-* This talk won't cover that last one (much)
+** This talk won't cover that last one (much)
 
 *  Why am I even thinking about this?
 
-** I've got nearly 40 years programming behind me
+** I've got over 40 years programming behind me
 
 ** Now, I'm more interested in fundamentals
 
@@ -52,11 +73,10 @@ This is rhetoric, don't answer it yet!
 - what languages you work with
 
 * So let's explore!
-** Things people in the Go world rarely talk about.
-
-#+BEGIN_SRC 
+* Things people in the Go world rarely talk about.
+#+begin_quote
 Y = λf.(λx.f (x x))(λx.f (x x))
-#+END_SRC
+#+end_quote
 
 Who knows what this is?
 
@@ -66,19 +86,22 @@ Who knows what this is?
 ** ... created before computers existed
 
 * We're not going to go very deep
-** We only have half an hour!
+** We don't have much time, and it would *hurt*.
 
 * OK.  Now to some Go:
 
 ** First a type
 
-#+BEGIN_SRC go
+#+begin_src go
 type λ func(l λ) λ
-#+END_SRC
+#+end_src
 
 ** We asked "Is Go an untyped language?"
 
 No, but imagine a world where you only have this type!
+#+begin_src go
+type λ func(l λ) λ
+#+end_src
 
 * Checkpoint:
 ** Is everyone familiar with the notion of a closure?
