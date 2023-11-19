@@ -1,11 +1,12 @@
 #+reveal_root: https://cdn.jsdelivr.net/npm/reveal.js
 #+reveal_theme: beige
 #+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
-#+options: author:t broken-links:nil c:nil creator:nil
-#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
+#+options: author:nil broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:nil e:t email:nil f:t inline:t num:nil
 #+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
-#+options: timestamp:t title:t toc:nil todo:t |:t
-#+title: taking-go-to-church
+#+options: timestamp:nil title:t toc:nil todo:t |:t
+#+title:  Taking Go to Church
+#+subtitle:Go and the Lambda Calculus
 #+author: Geoffrey J. Teale
 #+email: tealeg@gmail.com
 #+language: en
@@ -14,10 +15,9 @@
 #+creator: Emacs 29.1 (Org mode 9.6.6)
 #+cite_export:
 
-* Taking Go to Church
-** (No, not *that* kind of church..)
-** (Don't worry, this will get less cryptic)
-** ... a bit. 
+* No, not *that* kind of church!
+** Don't worry, this will get less cryptic!
+** ... but only a bit. 
 
 * Who am I? 
 ** Geoffrey Teale
@@ -30,6 +30,10 @@ https://upvest.co
 
  https://www.linkedin.com/in/geoffteale/  [[./linkedin.svg]]
 
+* This presentation isn't about AWS Lambda
+- Sorry if you were expecting that.
+- You'll see why it's called "Lambda" though.
+  
 * A question that comes up a lot in Go
 **  "Is Go an object oriented langauge?"
 
@@ -41,14 +45,14 @@ Lets get a quick vote on that?
 
 ** Questions that come up less often are ...
 
-*** "Is Go an untyped language?"
+** "Is Go an untyped language?"
 
-*** "Is go a functional programming language?"
+** "Is go a functional programming language?"
 
 What do you think?
 
 ** These don't seem like interesting questions.
-*** Let's ask something more fundamental
+** Let's ask something more fundamental
 
 ** What is the minimum set of primitives you can do useful work with in Go?
 This is rhetoric, don't answer it yet!
@@ -60,7 +64,7 @@ This is rhetoric, don't answer it yet!
  
 [[./dramatic.jpg]]
 
-** This talk won't cover that last one (much)
+** I'm not going to over-promise on that last question :-) 
 
 *  Why am I even thinking about this?
 
@@ -70,21 +74,25 @@ This is rhetoric, don't answer it yet!
 
 ** That last question is important.
 - Large language models won't get us to AGI
-- Strange Loops might
-- .... but I digress.
+- What might?
 
+* Why am I talking to Go programmers about this?
 ** What ideas you're exposed to tends to depend on:
 - how and where you learned to program
 - what languages you work with
 
+** I want to expose you to ideas that don't crop up in the Go world
+
 * So let's explore!
+
 * Things people in the Go world rarely talk about.
 ** Who knows what this is?
 #+begin_quote
 Y = λf.(λx.f (x x))(λx.f (x x))
 #+end_quote
 
-
+** It's an algorithm, in a weird syntax
+- We'll find out what it does later
 
 * Lambda Calculus
 ** A formal system, in mathematical terms
@@ -296,6 +304,7 @@ These functions returned by =makeCounter= are our bridge back to normal, typed G
           return b
   }
 #+END_SRC
+- Note, there's no =a= in the returned function, so no =inc=
 
 ** If we then evaluate this:
 
@@ -306,7 +315,7 @@ These functions returned by =makeCounter= are our bridge back to normal, typed G
 
 ** ... we get =0=
 
-* What happens when we pass =inc= to =y=
+* What happens when we pass =inc= to the function =y=?
 Remember Y was next in the series! This is it:
 #+begin_src go-ts
   y := func(a λ) λ {
@@ -316,7 +325,7 @@ Remember Y was next in the series! This is it:
   }
 
 #+end_src
-** So we pass it inc
+** we pass it =inc=
 
 #+BEGIN_src go-ts
   e := y(inc)
@@ -325,10 +334,11 @@ Remember Y was next in the series! This is it:
 ** We get a function back where any mention of =a= is replaced by =inc=.
 
 #+BEGIN_src go-ts
-  e := func(z λ) λ {
-          return inc(z)
+  e := func(b λ) λ {
+          return inc(b)
   }
 #+END_SRC
+- This time =a(b)= was present, so we make it =inc(b)=
 
 ** If we then evaluate this:
 
@@ -360,7 +370,7 @@ Reminder: this is =z=
 #+END_SRC
 
 
-* That's right!
+** That's right!
 ** We get a =2=
 
 * What have we built here?
@@ -368,27 +378,18 @@ Reminder: this is =z=
 ** Another way to represent numbers
 #+BEGIN_src go-ts
   // 0 = λ ab.b
-  func zero(a λ) λ {
-    return func(b λ) λ {
-      return b
-    }
-  }
+  func zero(a λ) λ { return func(b λ) λ {return b}}
 
-  func one(a λ) λ {
-    return func(b λ) λ {
-      return a(b)
-    }
-  }
-
- func two(a λ) λ {
-    return func(b λ) λ {
-      return a(a(b))
-    }
-  }          
+  // λ ab.ab
+  func one(a λ) λ { return func(b λ) λ {return a(b)}}
+  
+  // λ ab.aab
+  func two(a λ) λ { return func(b λ) λ {return a(a(b))}}          
 #+END_SRC
 
 ** Church numerals!
-** We have to accept that these functions are numbers, even without using our =inc= and =get= functions.
+- We have to accept that these functions are numbers, even without using our =inc= and =get= functions.
+
 ** =inc= also demonstrates that these numbers can also be exponents:
 #+BEGIN_src go-ts
   n := two(two) // 2**2
@@ -561,6 +562,7 @@ If I asked you to create =if= from scratch, without using =if= or =or= how would
 
 The implementation of =zero= is identical to =false=
 The implementation of =one= is identical to =IfThenElse=
+Every church numeral is also the exponent function of the same value.
 
 ** Complexity arises from the repetitive application of simple forms
 - This doesn't stop here.
@@ -579,6 +581,9 @@ The implementation of =one= is identical to =IfThenElse=
 #+BEGIN_SRC
  Y = λf.(λx.f (x x))(λx.f (x x))
 #+END_SRC
+
+- This literally allows recursion in a language with no recursion built in
+- It calculates "fixed points" of a function provided to it.
 
 ** In Go
 #+begin_src go-ts
@@ -643,7 +648,6 @@ fatal error: stack overflow
   - Trampoline functions, for example.
 
 ** If you really want to work this way you'd probably better look at Scheme, Haskell, OCaml, etc..
-
 
 
 * What's the point of all this?
