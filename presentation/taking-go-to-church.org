@@ -28,7 +28,7 @@
                    [[./logo.png]]
 https://upvest.co
 
- https://www.linkedin.com/in/geoffteale/  [[./linkedin.png]]
+ https://www.linkedin.com/in/geoffteale/  [[./linkedin.svg]]
 
 * A question that comes up a lot in Go
 **  "Is Go an object oriented langauge?"
@@ -68,17 +68,23 @@ This is rhetoric, don't answer it yet!
 
 ** Now, I'm more interested in fundamentals
 
+** That last question is important.
+- Large language models won't get us to AGI
+- Strange Loops might
+- .... but I digress.
+
 ** What ideas you're exposed to tends to depend on:
 - how and where you learned to program
 - what languages you work with
 
 * So let's explore!
 * Things people in the Go world rarely talk about.
+** Who knows what this is?
 #+begin_quote
 Y = λf.(λx.f (x x))(λx.f (x x))
 #+end_quote
 
-Who knows what this is?
+
 
 * Lambda Calculus
 ** A formal system, in mathematical terms
@@ -92,21 +98,21 @@ Who knows what this is?
 
 ** First a type
 
-#+begin_src go
+#+begin_src go-ts
 type λ func(l λ) λ
 #+end_src
 
 ** We asked "Is Go an untyped language?"
 
 No, but imagine a world where you only have this type!
-#+begin_src go
+#+begin_src go-ts
 type λ func(l λ) λ
 #+end_src
 
-* Checkpoint:
+** Checkpoint:
 ** Is everyone familiar with the notion of a closure?
 
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   func makeClosure() func() int {
           x := 4
           return func() int { return x }
@@ -120,74 +126,132 @@ type λ func(l λ) λ
 ** Who's this?
 [[./curry-photo.jpg]]
 
-* Haskell Curry (1900-1982)
+** Haskell Curry (1900-1982)
 ** What's named after him?
 [[./curry-photo.jpg]]
 
 
-* Yes, the programming language "Haskell"
+** Yes, the programming language "Haskell"
 ** But also.. Currying
-Even though he didn't invent it.
+Currying is the technique of translating the evaluation of a function that takes multiple arguments into evaluating a sequence of functions, each with a single argument.
 
-** Moses Schönfinkel (6 years earlier)
-[[./schoenfinkel.jpg]]
+** Currying
+an equivalency:
 
-** Gottlob Frege (1893)
-[[./frege.jpg]]
-
-* Currying
-** an equivalency:
-
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
 x := f(a, b, c)
 x := f(a)(b)(c)
 #+END_SRC
 
 We need to know that to understand the next piece
 
+
+** Actually, he didn't invent it.
+
+** Moses Schönfinkel
+Curry actually attributed the idea to Schönfinkel who had done it 6
+years earlier.
+
+[[./schoenfinkel.jpg]]
+
+** Gottlob Frege 
+... but actually Frege had already found it before him.
+[[./frege.jpg]]
+
+
 * Lambda Calculus syntax in our Go world
-#+BEGIN_SRC
-λa.a         => func(a λ) λ { return a }
-λa.(λb.ba)   => func(a λ) λ { return func(b λ) λ { return b(a) }}
-λab.ba       => func(a λ) λ { return func(b λ) λ { return b(a) }}
-λab.(bb)(aa) => func(a λ) λ { return func(b λ) λ { return (b(b))(a(a)) }}
+** Translation (1)
+#+begin_src 
+λa.a
+#+end_src
+Translates to
+#+BEGIN_SRC go-ts
+  func(a λ) λ { return a }
 #+END_SRC
-
-
-
-* .. and then a closure that is a bridge
-#+BEGIN_SRC go
-
-    func makeCounter() (λ, func(), func()) {
-            var i int = 0
-
-            inc := func(f λ) λ{
-                    i = i + 1
-                    return f	
-            }
-
-            get := func() int {
-                    return i
-            }
-
-            reset := func() {
-                    i = 0
-            }
-
-            return inc, get, reset
+** Translation (2)
+#+begin_src 
+λa.(λb.ba)
+#+end_src
+Translates to
+#+begin_src go-ts
+  func(a λ) λ {
+	  return func(b λ) λ {
+		  return b(a)
+	  }
+  }
+#+end_src
+** Translation (3)
+A "shorthand".
+Exactly equivalent to the previous case:
+#+begin_src 
+λab.ba
+#+end_src
+Translates to
+#+begin_src go-ts
+  func(a λ) λ {
+	  return func(b λ) λ {
+		  return b(a)
+	  }
+  }
+#+end_src
+** Translation (4)
+Parenthesis mean what you think they mean :-) 
+#+begin_src 
+λab.(bb)(aa)
+#+end_src
+Translates to
+#+begin_src go-ts
+  func(a λ) λ {
+    return func(b λ) λ {
+	return (b(b))(a(a))
     }
+  }
+#+end_src
+** We need a closure as a bridge
+#+BEGIN_SRC go-ts
+
+     func makeCounter() (λ, func(), func()) {
+	     var i int = 0
+
+	     // We'll define inc, get and reset here
+
+	     return inc, get, reset
+     }
 
 #+END_SRC
 
+** The increment function
+#+begin_src go-ts
+  inc := func(f λ) λ{
+	  i = i + 1
+	  return f	
+  }
+#+end_src
+
+** The get function
+#+begin_src go-ts
+  get := func() int {
+	  return i
+  }
+#+end_src
+
+** The reset function
+#+begin_src go-ts
+  reset := func() {
+	  i = 0
+  }
+#+end_src
+
+** Try to remember...
 Remember =inc= and =get!=
 These functions returned by =makeCounter= are our bridge back to normal, typed Go.
 
 
 
 * A curried function
-** But what does it do?
+- But what does it do?
 
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   // λ ab.b
   x := func(a λ) λ {
           return func(b λ) λ {
@@ -197,18 +261,20 @@ These functions returned by =makeCounter= are our bridge back to normal, typed G
 
 #+END_SRC
 
-* It's part of sequence, here's the next one
+** It's part of sequence, here's the next one
 
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   // λ ab.ab
   y := func(a λ) λ {
-          return func(b λ) λ {
-                  return a(b)
-          }
+	  return func(b λ) λ {
+		  return a(b)
+	  }
   }
+
+  
 #+END_SRC
 ** ... and a third
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   // λ ab.aab
   z := func(a λ) λ {
           return func(b λ) λ {
@@ -217,48 +283,61 @@ These functions returned by =makeCounter= are our bridge back to normal, typed G
   }
 #+END_SRC
 
-* Let's see what happens when we pass our =inc= function to =x=
+** Let's see what happens when we pass our =inc= function to =x=
 
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   e := x(inc) // e = (λ ab.b)inc
 #+END_SRC
-We get a function back where any mention of =a= is replaced by =inc=.
 
-#+BEGIN_SRC go
+** We get a function back where any mention of =a= is replaced by =inc=.
+
+#+BEGIN_src go-ts
   e := func(b λ) λ {  // e = λ b.b
           return b
   }
 #+END_SRC
 
-If we then evaluate this:
+** If we then evaluate this:
 
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   _ = e(nil)       // (λ b.b)nil => nil
   result := get()  // inc is never called, so result = 0
 #+END_SRC
 
-... we get =0=
+** ... we get =0=
 
 * What happens when we pass =inc= to =y=
-#+BEGIN_SRC go
+Remember Y was next in the series! This is it:
+#+begin_src go-ts
+  y := func(a λ) λ {
+          return func(b λ) λ {
+                  return a(b)
+          }
+  }
+
+#+end_src
+** So we pass it inc
+
+#+BEGIN_src go-ts
   e := y(inc)
 #+END_SRC
-We get a function back where any mention of =a= is replaced by =inc=.
 
-#+BEGIN_SRC go
+** We get a function back where any mention of =a= is replaced by =inc=.
+
+#+BEGIN_src go-ts
   e := func(z λ) λ {
           return inc(z)
   }
 #+END_SRC
 
-If we then evaluate this:
+** If we then evaluate this:
 
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   e(nil)
 #+END_SRC
 
-We'll call inc:
-#+BEGIN_SRC go
+** We'll call inc:
+#+BEGIN_src go-ts
 
   inc := func(f λ) λ {
            i = i + 1
@@ -266,10 +345,12 @@ We'll call inc:
   }
 #+END_SRC
 
-.. and then calling =get()= will return =1=
+** .. and then calling =get()=
+.. will return =1=
+
 * What will happen if we do the same with function =z=?
 Reminder: this is =z=
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   // λ ab.aab
   z := func(a λ) λ {
           return func(b λ) λ {
@@ -282,8 +363,10 @@ Reminder: this is =z=
 * That's right!
 ** We get a =2=
 
-* Another way to represent numbers
-#+BEGIN_SRC go
+* What have we built here?
+
+** Another way to represent numbers
+#+BEGIN_src go-ts
   // 0 = λ ab.b
   func zero(a λ) λ {
     return func(b λ) λ {
@@ -304,10 +387,10 @@ Reminder: this is =z=
   }          
 #+END_SRC
 
-* Church numerals
+** Church numerals!
 ** We have to accept that these functions are numbers, even without using our =inc= and =get= functions.
 ** =inc= also demonstrates that these numbers can also be exponents:
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   n := two(two) // 2**2
   _ = n(inc)
   get() // => 4
@@ -317,29 +400,36 @@ Reminder: this is =z=
   get() // => 16
 #+END_SRC
 ** It's a weird name...
-
-* Pop Quiz 2: Who's this?
+- what does this have to do with "church"?
+  
+* Pop Quiz 2
+** Who's this?
 [[./alan-turing.jpg]]
-* Alan Turing (1912-1954)
+**  Alan Turing (1912-1954)
 ** Creater of the Turing Machine
-[[./alan-turing.jpg]]
  - A theoretical, mechanical machine
- - Any algorithm can be implemented on a Turing Machine
+ - Anything that can be computed, can be computed on a Turing Machine
 
-* Pop Quiz 3: Who's this?
+[[./alan-turing.jpg]]
+
+* Pop Quiz 3
+** Who's this?
 [[./Alonzo_Church.jpg]]
 
-* Alonzo Church (1903-1995)
-** PhD supervisor of Turing
-** Invented the lambda calculus 
-** Invented Church numerals
-To make numbers work in the lambda calculus
+** Alonzo Church (1903-1995)
+- PhD supervisor of Turing
+- Invented the lambda calculus 
+- Invented Church numerals
+  
 ** Church-Turing Thesis
+There is an equivalence!
+Anything that can be computed, can be computed using lambda calculus!
+
 [[./Alonzo_Church.jpg]]
 
 * Operations on church numbers
 ** Succesor 
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   // λ abc.b(abc)
   succ = func(a λ) λ {
       return func(b λ) λ {
@@ -350,26 +440,27 @@ To make numbers work in the lambda calculus
   }
 #+END_SRC
 
-* Successor to zero
-#+BEGIN_SRC go
+** Successor to zero
+#+BEGIN_src go-ts
 
   // λ ab.b
   zero := func(x λ) λ { return func(y λ) λ { return y } }
 
-  s0 := succ(zero)   // s0 = (λ abc.b(abc))(λ ab.b)
+  // s0 = (λ abc.b(abc))(λ ab.b)
+  s0 := succ(zero)   
 #+END_SRC
 
-The result of =succ(zero)= is a function where all references to =a= are replaced with =zero=:
-#+BEGIN_SRC go
+** The result of =succ(zero)= is a function where all references to =a= are replaced with =zero=:
+#+BEGIN_src go-ts
   s0 := func(b λ) λ {
           return func(c λ) λ {
             return b(zero(b)(c))
         }
   }
 #+END_SRC
-* ... successor to zero
-What will happen when we evaluate =zero(b)(c)= at the heart of this function?
-#+BEGIN_SRC go
+
+** What will happen when we evaluate =zero(b)(c)= at the heart of this function?
+#+BEGIN_src go-ts
   zerothB := (func(x λ) λ { return func(y λ) λ {return y} })( b )( c )
   // parameter x is thrown away
   zerothB := func(y λ) λ { return y }(c)
@@ -377,9 +468,9 @@ What will happen when we evaluate =zero(b)(c)= at the heart of this function?
   zerothB := c
 #+END_SRC
 
-so..
+** so..
 
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   s0 := func(b λ) λ {
           return func(c λ) λ {
             return b(c)
@@ -387,20 +478,21 @@ so..
  }
 #+END_SRC
 
-What's interesting about this function?
+** What's interesting about this function?
 
-* That's right!
-
-#+BEGIN_SRC go
+**  That's right!
+It's the same as the definition of =one=
+#+BEGIN_src go-ts
   one := func(a λ) λ {
           return func(b λ) λ {
             return a(b)
           }
   }
 #+END_SRC
+
 * Addition
 ** We get it for free!
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   plus := succ
   result := one(plus)(one)
   _ = result(inc)
@@ -408,11 +500,11 @@ What's interesting about this function?
 #+END_SRC
 
 * Okay, soon it'll be time to rest your brain
-The break is coming I promise.
+We'll stop working through things now
 
-* Some lambda forms algorithms to enjoy in your own time :-)
+** Some lambda forms algorithms to enjoy in your own time :-)
 ** Multiplication
-#+BEGIN_SRC go
+#+BEGIN_src go-ts
   // λabc.a(bc)
   func mul (a λ) λ {
     return func(b λ) λ {
@@ -425,22 +517,33 @@ The break is coming I promise.
   four := mul(two)(two)
 
 #+END_SRC
-* Boolean logic
-#+BEGIN_SRC go
+
+** Boolean logic (True)
+#+BEGIN_src go-ts
     // λab.a
     func True(a λ) λ {
             return func(b λ) λ {
                     return a
             }
     }
+#+END_SRC
 
+** Boolean logic (False)
+#+begin_src go-ts
     // λab.b
     func False(a λ) λ {
             return func(b λ) λ {
                     return b
             }
     }
+#+end_src
 
+** Stop and think
+If I asked you to create =if= from scratch, without using =if= or =or= how would you do that?
+
+** If Then Else
+
+#+begin_src go-ts
     // λab.a(b)
     func IfThenElse(a λ) λ {
             return func(b λ) λ {
@@ -450,7 +553,26 @@ The break is coming I promise.
 
   trueOne := IfThenElse(True)(one)(two)
   falseTwo := IfThenElse(False)(one)(two)
-#+END_SRC
+
+#+end_src
+
+* Something subtle
+... some lambda forms do more than one thing.
+
+The implementation of =zero= is identical to =false=
+The implementation of =one= is identical to =IfThenElse=
+
+** Complexity arises from the repetitive application of simple forms
+- This doesn't stop here.
+
+* Pop Quiz 4
+** Who's this?
+[[./hofstadter.png]]
+
+** Douglas Hofstadter
+- Originator of the "Strange Loop"
+- Showed examples of complexity arising from simple patters applied recursively
+- Theorised the animal intelligence might be an example of this
 
 * Recursion
 ** The famous Y-combinator!
@@ -458,21 +580,123 @@ The break is coming I promise.
  Y = λf.(λx.f (x x))(λx.f (x x))
 #+END_SRC
 
-I've not implemented this one yet!  This implements recursion in any
-language that supports first class functions.
+** In Go
+#+begin_src go-ts
+func Y (f λ) λ {
+	return func(le λ) λ {
+		return func(g λ) λ{
+			return g(g)
+		}(
+			func(h λ) λ {
+				return le(func(x λ) λ {
+					return h(h)(x)
+				})
+			},
+		)
+	}
+}
+#+end_src
 
-See also: https://thealmarty.com/2018/08/13/recursion-in-lambda-calculus-the-y-combinator/
+** We can use it to build recursive functions
+Factorial
+#+begin_src go-ts
+// F  = λ f. λ n. cond (isZero n) 1 (Mult n (f (Pred n))
+func F(f λ) λ {
+	return func(n λ) λ {
+		return IfThenElse(IsZero(n))(one)(mul(n)(f(pred(n))))
+	}
+}
+#+end_src
+
+** And call it like this:
+#+begin_src go-ts
+  fact := Y(F)
+  result := fact(zero)
+#+end_src
+
+** factorial of zero:
+#+begin_src go-ts
+  result = fact(zero)
+  _ = result(inc)
+  get() // => 1
+#+end_src
+Success!
+
+** factorial of one:
+#+begin_src go-ts
+  result = fact(one)
+#+end_src
+
+Who can guess the output?
+
+** Disaster!
+#+begin_src sh
+runtime: goroutine stack exceeds 1000000000-byte limit
+runtime: sp=0xc0201e03c0 stack=[0xc0201e0000, 0xc0401e0000]
+fatal error: stack overflow
+#+end_src
+
+** Go is funadmentally limited
+- We lack "tail call optimisation"
+- It makes stacktraces easier to read if you don't overwrite the stack!
+- Note: workarounds exist!
+  - Trampoline functions, for example.
+
+** If you really want to work this way you'd probably better look at Scheme, Haskell, OCaml, etc..
+
+
 
 * What's the point of all this?
-* Originally, it answered questions about what was possible.
+** Originally, it answered questions about what was possible.
 Turing added the part that made it seem feasible in the *real* world.
-... though Conrad Zuse was already working on that :-) 
-* Now, it gives us an important lesson:
-- Any problem that can be solved in computing can be solved in Go, using only functions.
-- Functions are the most powerful primitive we have.
-- Technically we don't need types, or generics.  In practise they're easier to use.
+... though Conrad Zuse was already working on that :-)
+
+** Now, it gives us important lessons
+** Any problem that can be solved in computing can be solved in using only functions.
+** It's not always easy, and being a purist about it is dumb
+** Functions are the most powerful primitive we have.
+... but there are more idiomatic and performant abstractions
+** Technically we don't need types, or generics.
+... In practise they're easier to use.
+** Closures are genuinely useful
+- Closures can abstract state from logic
+  - I use them to separate business logic from IO
+  - This can simplify testing (another topic, for another day)
+** Curried functions are genuinely useful
+- We can "partially" evaluate functions
+- We can capture a logical state and only "do the math" when we need it
+    
 * What about the notion of the self-aware system?
-- This process is possibly isomorphic to how we build functionality in the lambda calculus.
-- Read "Gödel, Escher, Bach: an Eternal, Golden, Braid" by Douglas Hofstadter 
+** This process is possibly isomorphic to how we build functionality in the lambda calculus.
+** The re-emergence of simply patterns at different levels of complexity is called a "Strange Loop"
+** Strage Loops cause complex behaviour to emerge from very simply patterns
+** Many believe understanding this is the key to unlocking AGI
+
+* The source code:
+All of the Go code above, this presentation and more is in my GitHub repository:
+[[https://github.com/tealeg/go-lambda-calculus][https://github.com/tealeg/go-lambda-calculus]]
+
+* Further reading:
+** On the lambda calculus
+- [[https://plato.stanford.edu/entries/lambda-calculus/][The Stanford Encylopedia of Philosophy]]
+- [[https://thealmarty.com/2018/08/13/recursion-in-lambda-calculus-the-y-combinator/][Recursion in the Lambda Calculus and the Y-Combinator]]
+
+** If you'd like to know more about Strange Loops
+- Read the books of Douglass Hofstadter, this will take you from base
+  concepts to the hypothesis of consciousness emerging from strange
+  loops.
+  - [[https://www.hachettebookgroup.com/titles/douglas-r-hofstadter/godel-escher-bach/9780465026562/][Gödel, Escher, Bach: an Eternal, Golden, Braid]]
+  - [[https://www.hachettebookgroup.com/titles/douglas-r-hofstadter/i-am-a-strange-loop/9780465030798/][I am a Strange Loop]]
+  
+** If you'd like to explore these ideas in a more "appropriate" programming language:
+- Your best bet is the "little" books (all Scheme based)
+  - [[https://www.penguinrandomhouse.com/books/655814/the-little-schemer-fourth-edition-by-daniel-p-friedman-and-matthias-felleisen/][The Little Schemer]] (From nothing to the Y-Combinator and meta-circular-interpreters)
+  - [[https://www.penguinrandomhouse.com/books/655370/the-seasoned-schemer-second-edition-by-daniel-p-friedman-and-matthias-felleisen-drawings-by-duane-bibby-foreword-by-guy-l-steele-jr/][The Seasoned Schemer]] (First class functions, exceptions and state)
+  - [[https://www.penguinrandomhouse.com/books/657971/the-reasoned-schemer-second-edition-by-daniel-p-friedman-william-e-byrd-oleg-kiselyov-and-jason-hemann-drawings-by-duane-bibby-foreword-by-guy-lewis-steele-jr-and-gerald-jay-sussman-afterwo/9780262535519/][The Reasoned Schemer]] (Logic programming)
+  - [[https://www.penguinrandomhouse.com/books/657080/the-little-prover-by-daniel-p-friedman-and-carl-eastlund-drawings-by-duane-bibby-foreword-by-j-strother-moore-afterword-by-matthias-felleisen/9780262527958/][The Little Prover]] (Inductive proof as a mechanism to assert facts about programs)
+  - [[https://www.penguinrandomhouse.com/books/657918/the-little-typer-by-daniel-p-friedman-and-david-thrane-christiansen-illustrations-by-duane-bibby-foreword-by-robert-harper-afterward-by-conor-mcbride/9780262536431/][The Little Typer]] (Type Systems)
+  - [[https://www.penguinrandomhouse.com/books/727118/the-little-learner-by-daniel-p-friedman-and-anurag-mendhekar-illustrated-by-qingqing-su-foreword-by---guy-l-steele-jr-foreword-by-peter-norvig/9780262546379/][The Little Learner]] (Machine Learning)
+  
 * The end
 [[./endgopher.png]]
+

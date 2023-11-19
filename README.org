@@ -1,6 +1,13 @@
 * Go Lambda Calculus
 
-This repository captures the implementation of various aspects of lambda calculus I used to support my presentation to the [[https://www.meetup.com/golang-users-berlin/events/288948507/][GDG Berlin Go meetup on the 12th of October 2022]].
+This repository captures the implementation of various aspects of
+lambda calculus I used to support my presentation to the [[https://www.meetup.com/golang-users-berlin/events/288948507/][GDG Berlin Go
+meetup on the 12th of October 2022]] and then again on [[https://www.meetup.com/hannover-gophers/events/297099701/][22nd of
+November, 2023 for the Hannover Gophers]].
 
-This code isn't yet complete, and I'll probably keep working on it, from time to time. The presentation itself is contained in the =presentation= subdirectory, and is in [[https://orgmode.org/][Org-mode]] format (I presented using [[https://github.com/rlister/org-present][org-present]])
+This code isn't yet complete, and I'll probably keep working on it,
+from time to time. The presentation itself is contained in the
+=presentation= subdirectory, and is in [[https://orgmode.org/][Org-mode]] format (I presented
+using [[https://github.com/rlister/org-present][org-present]] for the Berlin event, and Org-reveal (reveal.js) for
+the Hannover event).
 
