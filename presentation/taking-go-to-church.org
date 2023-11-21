@@ -35,7 +35,7 @@ https://upvest.co
 - You'll see why it's called "Lambda" though.
   
 * A question that comes up a lot in Go
-**  "Is Go an object oriented langauge?"
+**  "Is Go an object oriented language?"
 
 Lets get a quick vote on that?
 
@@ -141,7 +141,9 @@ type λ func(l λ) λ
 
 ** Yes, the programming language "Haskell"
 ** But also.. Currying
-Currying is the technique of translating the evaluation of a function that takes multiple arguments into evaluating a sequence of functions, each with a single argument.
+Currying is the technique of translating the evaluation of a function
+that takes multiple arguments into evaluating a sequence of functions,
+each with a single argument.
 
 ** Currying
 an equivalency:
@@ -407,11 +409,9 @@ Reminder: this is =z=
 ** Who's this?
 [[./alan-turing.jpg]]
 **  Alan Turing (1912-1954)
-** Creater of the Turing Machine
+** Creator of the Turing Machine
  - A theoretical, mechanical machine
  - Anything that can be computed, can be computed on a Turing Machine
-
-[[./alan-turing.jpg]]
 
 * Pop Quiz 3
 ** Who's this?
@@ -429,7 +429,7 @@ Anything that can be computed, can be computed using lambda calculus!
 [[./Alonzo_Church.jpg]]
 
 * Operations on church numbers
-** Succesor 
+** Successor 
 #+BEGIN_src go-ts
   // λ abc.b(abc)
   succ = func(a λ) λ {
@@ -462,11 +462,15 @@ Anything that can be computed, can be computed using lambda calculus!
 
 ** What will happen when we evaluate =zero(b)(c)= at the heart of this function?
 #+BEGIN_src go-ts
-  zerothB := (func(x λ) λ { return func(y λ) λ {return y} })( b )( c )
-  // parameter x is thrown away
-  zerothB := func(y λ) λ { return y }(c)
-  // So the evaluation resolves to:
-  zerothB := c
+	  zerothB := (func(x λ) λ {
+		  return func(y λ) λ {
+			  return y
+		  }
+	  })( b )( c )
+	  // parameter x is thrown away
+	  zerothB := func(y λ) λ { return y }(c)
+	  // So the evaluation resolves to:
+	  zerothB := c
 #+END_SRC
 
 ** so..
@@ -560,9 +564,9 @@ If I asked you to create =if= from scratch, without using =if= or =or= how would
 * Something subtle
 ... some lambda forms do more than one thing.
 
-The implementation of =zero= is identical to =false=
-The implementation of =one= is identical to =IfThenElse=
-Every church numeral is also the exponent function of the same value.
+** The implementation of =zero= is identical to =false=
+** The implementation of =one= is identical to =IfThenElse=
+** Every church numeral is also the exponent function of the same value.
 
 ** Complexity arises from the repetitive application of simple forms
 - This doesn't stop here.
@@ -641,9 +645,9 @@ runtime: sp=0xc0201e03c0 stack=[0xc0201e0000, 0xc0401e0000]
 fatal error: stack overflow
 #+end_src
 
-** Go is funadmentally limited
+** Go is fundamentally limited
 - We lack "tail call optimisation"
-- It makes stacktraces easier to read if you don't overwrite the stack!
+- It makes stack traces easier to read if you don't overwrite the stack!
 - Note: workarounds exist!
   - Trampoline functions, for example.
 
@@ -653,13 +657,14 @@ fatal error: stack overflow
 * What's the point of all this?
 ** Originally, it answered questions about what was possible.
 Turing added the part that made it seem feasible in the *real* world.
-... though Conrad Zuse was already working on that :-)
+... though Konrad Zuse was already working on that :-)
 
 ** Now, it gives us important lessons
 ** Any problem that can be solved in computing can be solved in using only functions.
 ** It's not always easy, and being a purist about it is dumb
+... at least in Go
 ** Functions are the most powerful primitive we have.
-... but there are more idiomatic and performant abstractions
+... but there are more idiomatic abstractions
 ** Technically we don't need types, or generics.
 ... In practise they're easier to use.
 ** Closures are genuinely useful
@@ -668,7 +673,7 @@ Turing added the part that made it seem feasible in the *real* world.
   - This can simplify testing (another topic, for another day)
 ** Curried functions are genuinely useful
 - We can "partially" evaluate functions
-- We can capture a logical state and only "do the math" when we need it
+- We can capture a logical state and only do the work when we need it
     
 * What about the notion of the self-aware system?
 ** This process is possibly isomorphic to how we build functionality in the lambda calculus.
