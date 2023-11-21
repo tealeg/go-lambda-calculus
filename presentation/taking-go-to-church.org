@@ -15,9 +15,8 @@
 #+creator: Emacs 29.1 (Org mode 9.6.6)
 #+cite_export:
 
-* No, not *that* kind of church!
-** Don't worry, this will get less cryptic!
-** ... but only a bit. 
+* Taking Go to Church
+(No, not *that* kind of church..)
 
 * Who am I? 
 ** Geoffrey Teale
@@ -28,7 +27,12 @@
                    [[./logo.png]]
 https://upvest.co
 
- https://www.linkedin.com/in/geoffteale/  [[./linkedin.svg]]
+https://www.linkedin.com/in/geoffteale/  [[./linkedin.svg]]
+
+*** Slides and source code
+#+begin_src sh
+git clone git@github.com:tealeg/go-lambda-calculus.git
+#+end_src
 
 * This presentation isn't about AWS Lambda
 - Sorry if you were expecting that.
@@ -74,7 +78,7 @@ This is rhetoric, don't answer it yet!
 
 ** That last question is important.
 - Large language models won't get us to AGI
-- What might?
+- What clues do we have?
 
 * Why am I talking to Go programmers about this?
 ** What ideas you're exposed to tends to depend on:
@@ -660,13 +664,13 @@ Turing added the part that made it seem feasible in the *real* world.
 ... though Konrad Zuse was already working on that :-)
 
 ** Now, it gives us important lessons
-** Any problem that can be solved in computing can be solved in using only functions.
+** Any problem that can be solved in computing can be solved using only functions.
 ** It's not always easy, and being a purist about it is dumb
 ... at least in Go
 ** Functions are the most powerful primitive we have.
-... but there are more idiomatic abstractions
+... but _purely_ functional programming is not idiomatic Go.
 ** Technically we don't need types, or generics.
-... In practise they're easier to use.
+... in practise they're easier to use.
 ** Closures are genuinely useful
 - Closures can abstract state from logic
   - I use them to separate business logic from IO
@@ -674,10 +678,12 @@ Turing added the part that made it seem feasible in the *real* world.
 ** Curried functions are genuinely useful
 - We can "partially" evaluate functions
 - We can capture a logical state and only do the work when we need it
-    
+
 * What about the notion of the self-aware system?
 ** This process is possibly isomorphic to how we build functionality in the lambda calculus.
-** The re-emergence of simply patterns at different levels of complexity is called a "Strange Loop"
+** The re-emergence of simple patterns at different levels of complexity is called a "Strange Loop"
+- It's probably easiest to think of this in terms of fractals, or M. C. Escher paintings
+[[./Escher.jpg]]  
 ** Strage Loops cause complex behaviour to emerge from very simply patterns
 ** Many believe understanding this is the key to unlocking AGI
 
@@ -701,6 +707,7 @@ All of the Go code above, this presentation and more is in my GitHub repository:
 - Your best bet is the "little" books (all Scheme based)
   - [[https://www.penguinrandomhouse.com/books/655814/the-little-schemer-fourth-edition-by-daniel-p-friedman-and-matthias-felleisen/][The Little Schemer]] (From nothing to the Y-Combinator and meta-circular-interpreters)
   - [[https://www.penguinrandomhouse.com/books/655370/the-seasoned-schemer-second-edition-by-daniel-p-friedman-and-matthias-felleisen-drawings-by-duane-bibby-foreword-by-guy-l-steele-jr/][The Seasoned Schemer]] (First class functions, exceptions and state)
+** .. and more..     
   - [[https://www.penguinrandomhouse.com/books/657971/the-reasoned-schemer-second-edition-by-daniel-p-friedman-william-e-byrd-oleg-kiselyov-and-jason-hemann-drawings-by-duane-bibby-foreword-by-guy-lewis-steele-jr-and-gerald-jay-sussman-afterwo/9780262535519/][The Reasoned Schemer]] (Logic programming)
   - [[https://www.penguinrandomhouse.com/books/657080/the-little-prover-by-daniel-p-friedman-and-carl-eastlund-drawings-by-duane-bibby-foreword-by-j-strother-moore-afterword-by-matthias-felleisen/9780262527958/][The Little Prover]] (Inductive proof as a mechanism to assert facts about programs)
   - [[https://www.penguinrandomhouse.com/books/657918/the-little-typer-by-daniel-p-friedman-and-david-thrane-christiansen-illustrations-by-duane-bibby-foreword-by-robert-harper-afterward-by-conor-mcbride/9780262536431/][The Little Typer]] (Type Systems)
