@@ -20,44 +20,35 @@
 
 * Who am I? 
 ** Geoffrey Teale
-*** A proud gopher since November 10th 2009
+** A proud gopher since November 10th 2009
                    [[./megopher.png]]
 
-*** A Head of Engineering @ Upvest 
+** A Head of Engineering @ Upvest 
                    [[./logo.png]]
 https://upvest.co
 
 https://www.linkedin.com/in/geoffteale/  [[./linkedin.svg]]
 
-*** Slides and source code
+** Slides and source code
 #+begin_src sh
 git clone git@github.com:tealeg/go-lambda-calculus.git
 #+end_src
 
 * This presentation isn't about AWS Lambda
-- Sorry if you were expecting that.
-- You'll see why it's called "Lambda" though.
+** Sorry if you were expecting that.
+** You'll see why it's called "Lambda" though.
   
 * A question that comes up a lot in Go
-**  "Is Go an object oriented language?"
-
-Lets get a quick vote on that?
-
+** "Is Go an object oriented language?"
+** Lets get a quick vote on that?
 ** I'm not here to answer that question
-
 ** .. but the answer is, "not especially"
-
 ** Questions that come up less often are ...
-
 ** "Is Go an untyped language?"
-
 ** "Is go a functional programming language?"
-
-What do you think?
-
+** What do you think?
 ** These don't seem like interesting questions.
 ** Let's ask something more fundamental
-
 ** What is the minimum set of primitives you can do useful work with in Go?
 This is rhetoric, don't answer it yet!
 ** What is the most powerful abstraction in Go?
@@ -71,14 +62,11 @@ This is rhetoric, don't answer it yet!
 ** I'm not going to over-promise on that last question :-) 
 
 *  Why am I even thinking about this?
-
 ** I've got over 40 years programming behind me
-
 ** Now, I'm more interested in fundamentals
-
 ** That last question is important.
-- Large language models won't get us to AGI
-- What clues do we have?
+** Large language models alone won't get us to AGI
+** What clues do we have?
 
 * Why am I talking to Go programmers about this?
 ** What ideas you're exposed to tends to depend on:
@@ -87,7 +75,7 @@ This is rhetoric, don't answer it yet!
 
 ** I want to expose you to ideas that don't crop up in the Go world
 
-* So let's explore!
+** So let's explore!
 
 * Things people in the Go world rarely talk about.
 ** Who knows what this is?
@@ -116,12 +104,12 @@ type λ func(l λ) λ
 
 ** We asked "Is Go an untyped language?"
 
-No, but imagine a world where you only have this type!
+** No, but imagine a world where you only have this type!
 #+begin_src go-ts
 type λ func(l λ) λ
 #+end_src
 
-** Checkpoint:
+* Checkpoint:
 ** Is everyone familiar with the notion of a closure?
 
 #+BEGIN_src go-ts
@@ -259,8 +247,6 @@ Translates to
 ** Try to remember...
 Remember =inc= and =get!=
 These functions returned by =makeCounter= are our bridge back to normal, typed Go.
-
-
 
 * A curried function
 - But what does it do?
@@ -582,7 +568,7 @@ If I asked you to create =if= from scratch, without using =if= or =or= how would
 ** Douglas Hofstadter
 - Originator of the "Strange Loop"
 - Showed examples of complexity arising from simple patters applied recursively
-- Theorised the animal intelligence might be an example of this
+- Theorised that animal intelligence might be an example of this
 
 * Recursion
 ** The famous Y-combinator!
@@ -650,9 +636,9 @@ fatal error: stack overflow
 #+end_src
 
 ** Go is fundamentally limited
-- We lack "tail call optimisation"
-- It makes stack traces easier to read if you don't overwrite the stack!
-- Note: workarounds exist!
+** We lack "tail call optimisation"
+** It makes stack traces easier to read if you don't overwrite the stack!
+** Note: workarounds exist!
   - Trampoline functions, for example.
 
 ** If you really want to work this way you'd probably better look at Scheme, Haskell, OCaml, etc..
@@ -684,7 +670,7 @@ Turing added the part that made it seem feasible in the *real* world.
 ** The re-emergence of simple patterns at different levels of complexity is called a "Strange Loop"
 - It's probably easiest to think of this in terms of fractals, or M. C. Escher paintings
 [[./Escher.jpg]]  
-** Strage Loops cause complex behaviour to emerge from very simply patterns
+** Strange Loops cause complex behaviour to emerge from very simply patterns
 ** Many believe understanding this is the key to unlocking AGI
 
 * The source code:
