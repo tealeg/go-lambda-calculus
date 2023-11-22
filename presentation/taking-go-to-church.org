@@ -19,7 +19,10 @@
 (No, not *that* kind of church..)
 
 * Who am I? 
-** Geoffrey Teale
+** Geoffrey Teale (tealeg)
+- [[https://github.com/tealeg][https://github.com/tealeg]]  [[./github.svg]]
+- [[https://mastodon.online/@tealeg][@tealeg@mastodon.online]] [[./mastodon.png]]
+
 ** A proud gopher since November 10th 2009
                    [[./megopher.png]]
 
@@ -56,8 +59,7 @@ This is rhetoric, don't answer it yet!
 ** How can we derive complex behaviour from simple primitives?
 .. rhetoric, but a bit grander in scope.. 
 ** How is a self-aware "being" built from atoms?
- 
-[[./dramatic.jpg]]
+[[./dog-shock.gif]]
 
 ** I'm not going to over-promise on that last question :-) 
 
@@ -93,7 +95,7 @@ Y = λf.(λx.f (x x))(λx.f (x x))
 
 * We're not going to go very deep
 ** We don't have much time, and it would *hurt*.
-
+[[./otter-fright.gif]]
 * OK.  Now to some Go:
 
 ** First a type
@@ -567,7 +569,7 @@ If I asked you to create =if= from scratch, without using =if= or =or= how would
 
 ** Douglas Hofstadter
 - Originator of the "Strange Loop"
-- Showed examples of complexity arising from simple patters applied recursively
+- Showed examples of complexity arising from simple patterns applied recursively
 - Theorised that animal intelligence might be an example of this
 
 * Recursion
