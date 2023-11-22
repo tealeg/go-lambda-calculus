@@ -570,7 +570,7 @@ If I asked you to create =if= from scratch, without using =if= or =or= how would
 ** Douglas Hofstadter
 - Originator of the "Strange Loop"
 - Showed examples of complexity arising from simple patterns applied recursively
-- Theorised that animal intelligence might be an example of this
+- Hypothesis that animal intelligence might be an example of this
 
 * Recursion
 ** The famous Y-combinator!
